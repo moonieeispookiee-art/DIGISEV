@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nagrik Setu — Digital Services Register</title>
+<meta name="description" content="A citizen training register for DigiLocker, Aadhaar and PAN services, and public welfare schemes.">
+
+<style>
+  /* ============ TOKENS ============ */
+  :root{
+    --ink-100: #0B1F3A;   /* darkest navy — headings, primary text   */
+    --ink-80:  #14335C;   /* deep navy — panels, buttons             */
+    --ink-60:  #2C4F82;   /* mid navy — links, accents               */
+    --ink-40:  #6E86AA;   /* muted navy grey — secondary text, rule  */
+    --ink-20:  #C7D1DF;   /* pale navy grey — borders                */
+    --ink-08:  #EEF1F6;   /* faint navy tint — panel fill            */
+    --paper:   #F7F6F1;   /* page background — parchment             */
+    --paper-2: #FFFFFF;   /* card/panel background                   */
+    --serif: "Times New Roman", Times, Georgia, serif;
+    --max: 880px;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink-100);
+    font-family:var(--serif);
+    font-size:18px;
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  ::selection{ background:var(--ink-100); color:var(--paper); }
+
+  a{ color:var(--ink-60); }
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline:2px solid var(--ink-60);
+    outline-offset:3px;
+  }
+
+  h1,h2,h3{
+    font-family:var(--serif);
+    font-weight:700;
+    margin:0 0 .4em;
+    color:var(--ink-100);
+  }
+
+  p{ margin:0 0 1em; max-width:66ch; }
+
+  .wrap{ max-width:var(--max); margin:0 auto; padding:0 28px; }
+
+  /* ============ TOP NOTICE ============ */
+  .notice{
+    background:var(--ink-100);
+    color:var(--ink-08);
+    font-size:14px;
+    letter-spacing:.02em;
+    text-align:center;
+    padding:8px 16px;
+  }
+  .notice strong{ color:#fff; }
+
+  /* ============ NAV ============ */
+  header.site{
+    position:sticky; top:0; z-index:50;
+    background:rgba(247,246,241,.92);
+    backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--ink-20);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 28px;
+    max-width:var(--max); margin:0 auto;
+  }
+  .brand{
+    display:flex; align-items:center; gap:12px;
+    text-decoration:none; color:var(--ink-100);
+  }
+  .brand svg{ width:34px; height:34px; flex:none; }
+  .brand-text{ line-height:1.15; }
+  .brand-text .name{ font-size:19px; font-weight:700; }
+  .brand-text .tag{ font-size:12px; color:var(--ink-40); letter-spacing:.04em; }
+
+  nav.links{ display:flex; gap:22px; }
+  nav.links a{
+    text-decoration:none; color:var(--ink-80);
+    font-size:15px; padding:4px 2px;
+    border-bottom:1px solid transparent;
+  }
+  nav.links a:hover{ border-color:var(--ink-60); }
+
+  .nav-toggle{ display:none; background:none; border:1px solid var(--ink-40); color:var(--ink-100); font-family:var(--serif); font-size:15px; padding:6px 12px; cursor:pointer; }
+
+  @media (max-width:720px){
+    nav.links{
+      position:absolute; top:100%; left:0; right:0;
+      background:var(--paper); border-bottom:1px solid var(--ink-20);
+      flex-direction:column; gap:0; max-height:0; overflow:hidden;
+    }
+    nav.links.open{ max-height:400px; }
+    nav.links a{ padding:14px 28px; border-bottom:1px solid var(--ink-08); }
+    .nav-toggle{ display:block; }
+  }
+
+  /* ============ HERO / MASTHEAD ============ */
+  .masthead{
+    text-align:center;
+    padding:64px 28px 48px;
+    border-bottom:3px double var(--ink-40);
+  }
+  .seal{ width:96px; height:96px; margin:0 auto 22px; display:block; }
+  .masthead .eyebrow{
+    font-size:14px; color:var(--ink-40); letter-spacing:.06em; margin-bottom:10px;
+  }
+  .masthead h1{
+    font-size:clamp(32px,5vw,50px);
+    line-height:1.15;
+    max-width:14ch; margin-left:auto; margin-right:auto;
+  }
+  .masthead p.lede{
+    max-width:56ch; margin:18px auto 0; color:var(--ink-80); font-size:19px;
+  }
+  .hero-actions{ margin-top:28px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
+  .btn{
+    font-family:var(--serif); font-size:16px; text-decoration:none;
+    padding:11px 22px; border:1px solid var(--ink-100); cursor:pointer;
+    background:var(--ink-100); color:var(--paper);
+    transition:background .15s ease, color .15s ease;
+  }
+  .btn:hover{ background:var(--ink-80); }
+  .btn.ghost{ background:transparent; color:var(--ink-100); }
+  .btn.ghost:hover{ background:var(--ink-08); }
+  .btn.small{ padding:7px 14px; font-size:14px; }
+
+  /* ============ SECTION SCAFFOLD ============ */
+  section{ padding:64px 0; border-bottom:1px solid var(--ink-20); }
+  section:last-of-type{ border-bottom:none; }
+  .section-head{ margin-bottom:36px; }
+  .section-head .num{
+    font-size:14px; color:var(--ink-40); letter-spacing:.05em; display:block; margin-bottom:6px;
+  }
+  .section-head h2{ font-size:30px; }
+  .section-head p{ color:var(--ink-80); }
+
+  /* ============ SERVICE REGISTER (accordion) ============ */
+  .register{ border-top:1px solid var(--ink-100); }
+  .entry{ border-bottom:1px solid var(--ink-20); }
+  .entry-head{
+    width:100%; text-align:left; background:none; border:none;
+    display:flex; align-items:baseline; gap:18px;
+    padding:22px 0; cursor:pointer; font-family:var(--serif);
+  }
+  .entry-head .code{
+    font-size:15px; color:var(--ink-40); width:78px; flex:none;
+  }
+  .entry-head .title{ font-size:22px; font-weight:700; color:var(--ink-100); flex:1; }
+  .entry-head .plus{ font-size:22px; color:var(--ink-40); flex:none; transition:transform .2s ease; }
+  .entry.open .entry-head .plus{ transform:rotate(45deg); }
+
+  .entry-body{
+    max-height:0; overflow:hidden; transition:max-height .28s ease;
+  }
+  .entry.open .entry-body{ max-height:1400px; }
+  .entry-body-inner{ padding:0 0 32px 96px; }
+  @media (max-width:600px){ .entry-body-inner{ padding-left:0; } }
+
+  .entry-body .about{ color:var(--ink-80); }
+
+  .tool{
+    background:var(--paper-2); border:1px solid var(--ink-20);
+    padding:22px; margin-top:16px;
+  }
+  .tool h4{ margin:0 0 12px; font-size:16px; letter-spacing:.02em; color:var(--ink-60); }
+  .tool label{ display:block; font-size:14px; color:var(--ink-80); margin-bottom:6px; }
+  .tool input[type=text], .tool select, .tool textarea{
+    font-family:var(--serif); font-size:16px; padding:9px 10px;
+    border:1px solid var(--ink-40); background:var(--paper);
+    width:100%; max-width:340px; color:var(--ink-100);
+  }
+  .tool .row{ display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; margin-bottom:10px; }
+  .tool-result{ margin-top:14px; font-size:15px; padding:12px 14px; border-left:3px solid var(--ink-40); background:var(--ink-08); display:none; }
+  .tool-result.show{ display:block; }
+  .tool-result.ok{ border-color:#2C4F82; }
+  .tool-result.bad{ border-color:#8a2c2c; }
+
+  /* issued document card */
+  .doc-card{
+    border:1px solid var(--ink-100); background:var(--paper-2);
+    padding:16px 18px; margin-top:12px; position:relative;
+    display:flex; justify-content:space-between; gap:16px; align-items:center;
+  }
+  .doc-card .qr{
+    width:52px; height:52px; flex:none;
+    background:
+      linear-gradient(90deg, var(--ink-100) 20%, transparent 20%) 0 0/10px 10px,
+      linear-gradient(var(--ink-100) 20%, transparent 20%) 0 0/10px 10px,
+      var(--ink-08);
+    border:1px solid var(--ink-40);
+  }
+  .doc-card .meta .doc-title{ font-weight:700; }
+  .doc-card .meta .doc-sub{ font-size:13px; color:var(--ink-40); }
+  #locker-list{ margin-top:10px; }
+
+  /* ============ SCHEMES ============ */
+  .schemes{ border-top:1px solid var(--ink-100); }
+  .scheme-row{
+    display:grid; grid-template-columns:52px 1fr; gap:18px;
+    padding:20px 0; border-bottom:1px solid var(--ink-20);
+  }
+  .scheme-row .idx{ font-size:15px; color:var(--ink-40); padding-top:2px; }
+  .scheme-row h3{ font-size:19px; margin-bottom:4px; }
+  .scheme-row .desc{ color:var(--ink-80); margin-bottom:6px; }
+  .scheme-row .tag{
+    display:inline-block; font-size:12.5px; color:var(--ink-60);
+    border:1px solid var(--ink-40); padding:2px 9px; letter-spacing:.02em;
+  }
+
+  /* ============ ASSESSMENT ============ */
+  .quiz-box{
+    border:1px solid var(--ink-100); background:var(--paper-2); padding:30px;
+  }
+  .quiz-progress{ font-size:14px; color:var(--ink-40); margin-bottom:14px; }
+  .q-text{ font-size:20px; margin-bottom:18px; }
+  .options{ display:flex; flex-direction:column; gap:10px; margin-bottom:22px; }
+  .opt{
+    text-align:left; font-family:var(--serif); font-size:16px;
+    padding:12px 16px; border:1px solid var(--ink-40); background:var(--paper);
+    cursor:pointer;
+  }
+  .opt:hover{ background:var(--ink-08); }
+  .opt.correct{ border-color:#2C4F82; background:var(--ink-08); }
+  .opt.wrong{ border-color:#8a2c2c; }
+  .opt[disabled]{ cursor:default; }
+  .quiz-result{ display:none; text-align:center; }
+  .quiz-result.show{ display:block; }
+  .quiz-result .score{ font-size:44px; margin:8px 0; }
+
+  /* ============ FEEDBACK / LEDGER ============ */
+  .feedback-grid{ display:grid; grid-template-columns:1fr 1fr; gap:40px; }
+  @media (max-width:720px){ .feedback-grid{ grid-template-columns:1fr; } }
+  .feedback-grid form{ display:flex; flex-direction:column; gap:14px; }
+  .feedback-grid input, .feedback-grid textarea{
+    font-family:var(--serif); font-size:16px; padding:10px 12px;
+    border:1px solid var(--ink-40); background:var(--paper-2); color:var(--ink-100);
+  }
+  .feedback-grid textarea{ resize:vertical; min-height:100px; }
+  .ledger-title{ font-size:14px; color:var(--ink-40); margin-bottom:10px; letter-spacing:.03em; }
+  .ledger-item{ border-bottom:1px solid var(--ink-20); padding:12px 0; }
+  .ledger-item .who{ font-weight:700; font-size:15px; }
+  .ledger-item .msg{ color:var(--ink-80); font-size:15px; margin-top:2px; }
+  .ledger-item .when{ color:var(--ink-40); font-size:12px; margin-top:4px; }
+  .ledger-empty{ color:var(--ink-40); font-size:15px; }
+
+  /* ============ FOOTER ============ */
+  footer{ padding:40px 0 60px; }
+  footer .wrap{ display:flex; justify-content:space-between; gap:24px; flex-wrap:wrap; }
+  footer .col{ font-size:14px; color:var(--ink-40); max-width:340px; }
+  footer .col strong{ color:var(--ink-80); display:block; margin-bottom:4px; }
+  footer .disclaimer{ font-size:13px; color:var(--ink-40); border-top:1px solid var(--ink-20); margin-top:28px; padding-top:18px; }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    *{ transition:none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="notice"><strong>Training simulation.</strong> No data entered here is real or transmitted anywhere — everything runs in your browser.</div>
+
+<header class="site">
+  <div class="nav">
+    <a class="brand" href="#top">
+      <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="18" fill="none" stroke="#0B1F3A" stroke-width="1.6"/><circle cx="20" cy="20" r="13" fill="none" stroke="#0B1F3A" stroke-width="1"/><text x="20" y="25" text-anchor="middle" font-family="Times New Roman, serif" font-size="14" fill="#0B1F3A">NS</text></svg>
+      <span class="brand-text"><span class="name">Nagrik Setu</span><br><span class="tag">Citizen Services Register</span></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">Menu</button>
+    <nav class="links" id="navLinks">
+      <a href="#services">Services</a>
+      <a href="#schemes">Schemes</a>
+      <a href="#assessment">Assessment</a>
+      <a href="#feedback">Feedback</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="masthead">
+    <svg class="seal" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="46" fill="none" stroke="#0B1F3A" stroke-width="1.4"/>
+      <circle cx="50" cy="50" r="38" fill="none" stroke="#0B1F3A" stroke-width="1"/>
+      <g stroke="#2C4F82" stroke-width="1">
+        <line x1="50" y1="12" x2="50" y2="20"/><line x1="50" y1="80" x2="50" y2="88"/>
+        <line x1="12" y1="50" x2="20" y2="50"/><line x1="80" y1="50" x2="88" y2="50"/>
+        <line x1="21" y1="21" x2="27" y2="27"/><line x1="73" y1="73" x2="79" y2="79"/>
+        <line x1="21" y1="79" x2="27" y2="73"/><line x1="73" y1="27" x2="79" y2="21"/>
+      </g>
+      <text x="50" y="47" text-anchor="middle" font-family="Times New Roman, serif" font-size="13" fill="#0B1F3A">EST.</text>
+      <text x="50" y="62" text-anchor="middle" font-family="Times New Roman, serif" font-size="11" fill="#0B1F3A">2026</text>
+    </svg>
+    <div class="eyebrow">A community engagement training exercise</div>
+    <h1>Know your digital services, before you queue for them.</h1>
+    <p class="lede">DigiLocker, Aadhaar and PAN sit behind most government paperwork citizens deal with. This register explains what each one actually does, lets you try safe practice tools, and lists welfare schemes worth knowing about.</p>
+    <div class="hero-actions">
+      <a class="btn" href="#services">Open the service register</a>
+      <a class="btn ghost" href="#assessment">Take the assessment</a>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="services">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="num">Register I</span>
+        <h2>Core digital identity services</h2>
+        <p>Three services, three different jobs. Open an entry to read what it's for and try a practice tool that mimics its behaviour without touching any real record.</p>
+      </div>
+
+      <div class="register">
+
+        <div class="entry" data-entry>
+          <button class="entry-head">
+            <span class="code">DL</span>
+            <span class="title">DigiLocker</span>
+            <span class="plus">+</span>
+          </button>
+          <div class="entry-body">
+            <div class="entry-body-inner">
+              <p class="about">A personal, cloud-based document wallet. Instead of carrying physical certificates, a citizen keeps verified copies of their marksheets, licences and ID proofs in one place, ready to share when an office or form asks for them.</p>
+              <div class="tool">
+                <h4>Practice locker — issue a mock document</h4>
+                <div class="row">
+                  <div>
+                    <label for="doc-type">Document type</label>
+                    <select id="doc-type">
+                      <option>Class XII Marksheet</option>
+                      <option>Driving Licence</option>
+                      <option>Voter ID</option>
+                      <option>Vaccination Certificate</option>
+                    </select>
+                  </div>
+                  <button class="btn small" id="issue-doc">Issue to locker</button>
+                </div>
+                <div id="locker-list"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="entry" data-entry>
+          <button class="entry-head">
+            <span class="code">AA</span>
+            <span class="title">Aadhaar</span>
+            <span class="plus">+</span>
+          </button>
+          <div class="entry-body">
+            <div class="entry-body-inner">
+              <p class="about">A 12-digit identity number issued once per resident, used to prove who you are — not what you own or earn. The last digit is a checksum, meant to catch typing mistakes before a form is even submitted.</p>
+              <div class="tool">
+                <h4>Practice checker — structural format only</h4>
+                <div class="row">
+                  <div>
+                    <label for="aadhaar-input">12-digit number (any digits — this is a format demo)</label>
+                    <input type="text" id="aadhaar-input" maxlength="14" placeholder="e.g. 234123412346" inputmode="numeric">
+                  </div>
+                  <button class="btn small" id="check-aadhaar">Check format</button>
+                </div>
+                <div class="tool-result" id="aadhaar-result"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="entry" data-entry>
+          <button class="entry-head">
+            <span class="code">PA</span>
+            <span class="title">PAN</span>
+            <span class="plus">+</span>
+          </button>
+          <div class="entry-body">
+            <div class="entry-body-inner">
+              <p class="about">A 10-character Permanent Account Number used to track financial activity — filing tax, opening a bank account, buying property above a threshold. Unlike Aadhaar, its structure encodes information: the fourth letter marks whether the holder is an individual, a firm, a trust and so on.</p>
+              <div class="tool">
+                <h4>Practice checker — format and holder-type reader</h4>
+                <div class="row">
+                  <div>
+                    <label for="pan-input">PAN-style code</label>
+                    <input type="text" id="pan-input" maxlength="10" placeholder="e.g. ABCPD1234E" style="text-transform:uppercase">
+                  </div>
+                  <button class="btn small" id="check-pan">Check format</button>
+                </div>
+                <div class="tool-result" id="pan-result"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SCHEMES ============ -->
+  <section id="schemes">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="num">Register II</span>
+        <h2>Welfare schemes worth knowing</h2>
+        <p>A short list of well-known public schemes, numbered as they'd appear in an official register.</p>
+      </div>
+      <div class="schemes" id="schemesList"></div>
+    </div>
+  </section>
+
+  <!-- ============ ASSESSMENT ============ -->
+  <section id="assessment">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="num">Register III</span>
+        <h2>Quick assessment</h2>
+        <p>Five questions on what you just read. Your best score is kept on this device only.</p>
+      </div>
+      <div class="quiz-box">
+        <div class="quiz-progress" id="quizProgress">Question 1 of 5</div>
+        <div class="q-text" id="quizQuestion"></div>
+        <div class="options" id="quizOptions"></div>
+        <div class="quiz-result" id="quizResult">
+          <div style="color:var(--ink-40); font-size:14px;">You scored</div>
+          <div class="score" id="quizScore">0 / 5</div>
+          <div style="color:var(--ink-40); font-size:14px; margin-bottom:18px;" id="quizBest"></div>
+          <button class="btn" id="quizRetry">Retake</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEEDBACK ============ -->
+  <section id="feedback">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="num">Register IV</span>
+        <h2>Feedback ledger</h2>
+        <p>Leave a note on what was useful or confusing. Entries are stored only in this browser, as a stand-in for a real submissions log.</p>
+      </div>
+      <div class="feedback-grid">
+        <form id="feedbackForm">
+          <div>
+            <label for="fb-name" style="display:block; font-size:14px; color:var(--ink-80); margin-bottom:6px;">Name</label>
+            <input type="text" id="fb-name" required>
+          </div>
+          <div>
+            <label for="fb-msg" style="display:block; font-size:14px; color:var(--ink-80); margin-bottom:6px;">Message</label>
+            <textarea id="fb-msg" required></textarea>
+          </div>
+          <button class="btn" type="submit" style="align-self:flex-start;">Add to ledger</button>
+        </form>
+        <div>
+          <div class="ledger-title">Submissions on this device</div>
+          <div id="ledgerList"><div class="ledger-empty">No entries yet — be the first.</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="col">
+      <strong>Nagrik Setu</strong>
+      A working demonstration built for the Community Engagement Project, T.Y.IT — training on DigiLocker, Aadhaar and PAN services, and public welfare schemes.
+    </div>
+    <div class="col">
+      <strong>Built with</strong>
+      HTML, CSS and JavaScript only — a static page with no server, so it runs unmodified on GitHub Pages or straight off your desktop.
+    </div>
+  </div>
+  <div class="wrap disclaimer">
+    This is an educational simulation. No real Aadhaar, PAN or DigiLocker system is contacted, and no personal data leaves your browser.
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- nav toggle ---------- */
+  var navToggle = document.getElementById('navToggle');
+  var navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', function(){
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(){ navLinks.classList.remove('open'); });
+  });
+
+  /* ---------- accordion ---------- */
+  document.querySelectorAll('[data-entry]').forEach(function(entry){
+    var head = entry.querySelector('.entry-head');
+    head.addEventListener('click', function(){
+      var wasOpen = entry.classList.contains('open');
+      document.querySelectorAll('[data-entry]').forEach(function(e){ e.classList.remove('open'); });
+      if(!wasOpen) entry.classList.add('open');
+    });
+  });
+
+  /* ---------- DigiLocker practice tool ---------- */
+  var LOCKER_KEY = 'ns_locker_docs';
+  function loadLocker(){
+    try{ return JSON.parse(localStorage.getItem(LOCKER_KEY) || '[]'); }
+    catch(e){ return []; }
+  }
+  function saveLocker(list){ localStorage.setItem(LOCKER_KEY, JSON.stringify(list)); }
+  function renderLocker(){
+    var list = loadLocker();
+    var el = document.getElementById('locker-list');
+    el.innerHTML = '';
+    list.forEach(function(doc){
+      var card = document.createElement('div');
+      card.className = 'doc-card';
+      card.innerHTML =
+        '<div class="qr"></div>' +
+        '<div class="meta" style="flex:1;">' +
+          '<div class="doc-title">' + doc.type + '</div>' +
+          '<div class="doc-sub">Issued ' + doc.date + ' · Ref ' + doc.ref + '</div>' +
+        '</div>';
+      el.appendChild(card);
+    });
+  }
+  document.getElementById('issue-doc').addEventListener('click', function(){
+    var type = document.getElementById('doc-type').value;
+    var list = loadLocker();
+    list.unshift({
+      type: type,
+      date: new Date().toLocaleDateString(),
+      ref: 'NS-' + Math.floor(100000 + Math.random()*900000)
+    });
+    saveLocker(list);
+    renderLocker();
+  });
+  renderLocker();
+
+  /* ---------- Aadhaar format check (Verhoeff checksum, public algorithm) ---------- */
+  var d = [
+    [0,1,2,3,4,5,6,7,8,9],[1,2,3,4,0,6,7,8,9,5],[2,3,4,0,1,7,8,9,5,6],
+    [3,4,0,1,2,8,9,5,6,7],[4,0,1,2,3,9,5,6,7,8],[5,9,8,7,6,0,4,3,2,1],
+    [6,5,9,8,7,1,0,4,3,2],[7,6,5,9,8,2,1,0,4,3],[8,7,6,5,9,3,2,1,0,4],
+    [9,8,7,6,5,4,3,2,1,0]
+  ];
+  var p = [
+    [0,1,2,3,4,5,6,7,8,9],[1,5,7,6,2,8,3,0,9,4],[5,8,0,3,7,9,6,1,4,2],
+    [8,9,1,6,0,4,3,5,2,7],[9,4,5,3,1,2,6,8,7,0],[4,2,8,6,5,7,3,9,0,1],
+    [2,7,9,3,8,0,6,4,1,5],[7,0,4,6,9,1,3,2,5,8]
+  ];
+  function verhoeffValid(numStr){
+    var c = 0;
+    var digits = numStr.split('').reverse();
+    for(var i=0;i<digits.length;i++){
+      c = d[c][p[i % 8][parseInt(digits[i],10)]];
+    }
+    return c === 0;
+  }
+  document.getElementById('check-aadhaar').addEventListener('click', function(){
+    var raw = document.getElementById('aadhaar-input').value.replace(/\s/g,'');
+    var out = document.getElementById('aadhaar-result');
+    out.classList.remove('ok','bad');
+    if(!/^\d{12}$/.test(raw)){
+      out.textContent = 'Not a valid shape — Aadhaar numbers are exactly 12 digits, no letters.';
+      out.classList.add('bad');
+    } else if(!verhoeffValid(raw)){
+      out.textContent = 'Right length, but the checksum digit doesn\'t match — this is how a form catches a mistyped digit.';
+      out.classList.add('bad');
+    } else {
+      out.textContent = 'Passes the 12-digit structure and checksum test. This only means the shape is valid — it does not mean this number is real or assigned to anyone.';
+      out.classList.add('ok');
+    }
+    out.classList.add('show');
+  });
+
+  /* ---------- PAN format check ---------- */
+  var PAN_HOLDER = {
+    P: 'Individual', C: 'Company', H: 'Hindu Undivided Family', A: 'Association of Persons',
+    B: 'Body of Individuals', G: 'Government', J: 'Artificial Judicial Person',
+    L: 'Local Authority', F: 'Firm / LLP', T: 'Trust'
+  };
+  document.getElementById('check-pan').addEventListener('click', function(){
+    var raw = document.getElementById('pan-input').value.trim().toUpperCase();
+    var out = document.getElementById('pan-result');
+    out.classList.remove('ok','bad');
+    var m = /^[A-Z]{5}[0-9]{4}[A-Z]$/.exec(raw);
+    if(!m){
+      out.textContent = 'Not the right shape — a PAN is 5 letters, 4 digits, then 1 letter (e.g. ABCPD1234E).';
+      out.classList.add('bad');
+    } else {
+      var holderCode = raw[3];
+      var holderName = PAN_HOLDER[holderCode] || 'Unrecognised holder code';
+      out.textContent = 'Valid shape. Fourth letter "' + holderCode + '" marks the holder type: ' + holderName + '.';
+      out.classList.add('ok');
+    }
+    out.classList.add('show');
+  });
+
+  var schemes = [
+    { name:'PM-KISAN', tag:'Agriculture', desc:'Direct income support of ₹6,000 a year, paid to landholding farmer families in three instalments.' },
+    { name:'Ayushman Bharat (PM-JAY)', tag:'Health', desc:'Health cover up to ₹5 lakh per family per year for secondary and tertiary hospital care.' },
+    { name:'Pradhan Mantri Awas Yojana', tag:'Housing', desc:'Assistance toward building or buying a first home, for eligible rural and urban households.' },
+    { name:'Sukanya Samriddhi Yojana', tag:'Savings', desc:'A small-savings account for a girl child\'s education and marriage expenses, opened before she turns 10.' },
+    { name:'PM Ujjwala Yojana', tag:'Household', desc:'A free LPG connection for women from below-poverty-line households, to move away from solid cooking fuels.' },
+    { name:'Atal Pension Yojana', tag:'Pension', desc:'A guaranteed pension from age 60 for workers in the unorganised sector, based on contributions made earlier.' }
+  ];
+  var schemesEl = document.getElementById('schemesList');
+  schemes.forEach(function(s, i){
+    var row = document.createElement('div');
+    row.className = 'scheme-row';
+    row.innerHTML =
+      '<div class="idx">Sch. ' + (i+1).toString().padStart(2,'0') + '</div>' +
+      '<div>' +
+        '<h3>' + s.name + '</h3>' +
+        '<p class="desc">' + s.desc + '</p>' +
+        '<span class="tag">' + s.tag + '</span>' +
+      '</div>';
+    schemesEl.appendChild(row);
+  });
+
+  /* ---------- Assessment ---------- */
+  var questions = [
+    { q:'What does DigiLocker mainly do?', opts:['Stores verified copies of your documents online','Pays your electricity bill','Files your income tax return','Books train tickets'], correct:0 },
+    { q:'What does the last digit of an Aadhaar number help with?', opts:['It shows your date of birth','It catches a mistyped digit (checksum)','It shows your state of residence','It is chosen by the holder'], correct:1 },
+    { q:'In a PAN like ABCPD1234E, what does the 4th letter tell you?', opts:['The issuing state','Nothing, it is random','The type of PAN holder (individual, firm, etc.)','The year of issue'], correct:2 },
+    { q:'Ayushman Bharat (PM-JAY) is a scheme for:', opts:['Farm income support','Health insurance cover','Girl child savings','LPG connections'], correct:1 },
+    { q:'Which of these is true about this training site?', opts:['It submits your Aadhaar to a government server','It stores nothing and runs only in your browser','It requires a Node.js server to work','It needs an internet connection to open'], correct:1 }
+  ];
+  var qIndex = 0, score = 0;
+  var quizQuestion = document.getElementById('quizQuestion');
+  var quizOptions = document.getElementById('quizOptions');
+  var quizProgress = document.getElementById('quizProgress');
+  var quizResult = document.getElementById('quizResult');
+  var quizBox = document.querySelector('.quiz-box');
+
+  function renderQuestion(){
+    var item = questions[qIndex];
+    quizProgress.textContent = 'Question ' + (qIndex+1) + ' of ' + questions.length;
+    quizQuestion.textContent = item.q;
+    quizOptions.innerHTML = '';
+    item.opts.forEach(function(opt, i){
+      var b = document.createElement('button');
+      b.className = 'opt';
+      b.textContent = opt;
+      b.addEventListener('click', function(){ answer(i); });
+      quizOptions.appendChild(b);
+    });
+  }
+
+  function answer(i){
+    var item = questions[qIndex];
+    var buttons = quizOptions.querySelectorAll('.opt');
+    buttons.forEach(function(b, idx){
+      b.disabled = true;
+      if(idx === item.correct) b.classList.add('correct');
+      if(idx === i && i !== item.correct) b.classList.add('wrong');
+    });
+    if(i === item.correct) score++;
+    setTimeout(function(){
+      qIndex++;
+      if(qIndex < questions.length){
+        renderQuestion();
+      } else {
+        finishQuiz();
+      }
+    }, 700);
+  }
+
+  function finishQuiz(){
+    quizProgress.style.display = 'none';
+    quizQuestion.style.display = 'none';
+    quizOptions.style.display = 'none';
+    quizResult.classList.add('show');
+    document.getElementById('quizScore').textContent = score + ' / ' + questions.length;
+    var best = parseInt(localStorage.getItem('ns_quiz_best') || '0', 10);
+    if(score > best){ best = score; localStorage.setItem('ns_quiz_best', String(best)); }
+    document.getElementById('quizBest').textContent = 'Best on this device: ' + best + ' / ' + questions.length;
+  }
+
+  document.getElementById('quizRetry').addEventListener('click', function(){
+    qIndex = 0; score = 0;
+    quizResult.classList.remove('show');
+    quizProgress.style.display = '';
+    quizQuestion.style.display = '';
+    quizOptions.style.display = '';
+    renderQuestion();
+  });
+
+  renderQuestion();
+
+  /* ---------- Feedback ledger (simulated backend) ---------- */
+  var FB_KEY = 'ns_feedback';
+  function loadFeedback(){
+    try{ return JSON.parse(localStorage.getItem(FB_KEY) || '[]'); }
+    catch(e){ return []; }
+  }
+  function saveFeedback(list){ localStorage.setItem(FB_KEY, JSON.stringify(list)); }
+  function renderFeedback(){
+    var list = loadFeedback();
+    var el = document.getElementById('ledgerList');
+    if(list.length === 0){
+      el.innerHTML = '<div class="ledger-empty">No entries yet — be the first.</div>';
+      return;
+    }
+    el.innerHTML = '';
+    list.forEach(function(item){
+      var row = document.createElement('div');
+      row.className = 'ledger-item';
+      row.innerHTML =
+        '<div class="who">' + item.name + '</div>' +
+        '<div class="msg">' + item.msg + '</div>' +
+        '<div class="when">' + item.when + '</div>';
+      el.appendChild(row);
+    });
+  }
+  function escapeHtml(str){
+    var div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+  document.getElementById('feedbackForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var name = escapeHtml(document.getElementById('fb-name').value.trim());
+    var msg = escapeHtml(document.getElementById('fb-msg').value.trim());
+    if(!name || !msg) return;
+    var list = loadFeedback();
+    list.unshift({ name:name, msg:msg, when:new Date().toLocaleString() });
+    saveFeedback(list);
+    renderFeedback();
+    e.target.reset();
+  });
+  renderFeedback();
+
+})();
+</script>
+
+</body>
+</html>
